@@ -1,5 +1,7 @@
 using ToDoApp.Server;
 using Microsoft.OpenApi.Models;
+using Microsoft.Net.Http.Headers;
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,17 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                        policy => 
+                        {
+                            policy.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                        });
+});
+
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -20,6 +33,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo api V1");
     c.RoutePrefix = "swagger";
 });
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.MapGet("/api/v1/tarefas", async (IServiceProvider services) =>
 {
