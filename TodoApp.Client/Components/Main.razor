@@ -1,4 +1,5 @@
-﻿<div class="page p-4">
+﻿@inject HttpClient Http
+<div class="page p-4">
     <div class="row">
         <div class="col">
             <div class="card">
@@ -8,11 +9,15 @@
                         <u>My Todo-s</u>
                     </p>
                     <InsertToDo></InsertToDo>
-                    <ToDo></ToDo>
-                    <ToDo></ToDo>
-                    <ToDo></ToDo>
-                    <ToDo></ToDo>
-                    <ToDo></ToDo>
+                    @if (tarefas==null){
+                        <p><em>Carregando...</em></p>
+                    }
+                    else{
+                        @foreach (var tarefa in tarefas)
+                        {
+                            <ToDo tarefa="@tarefa"></ToDo>
+                        }                        
+                    }                        
                 </div>
             </div>
         </div>
@@ -20,5 +25,18 @@
 </div>
 
 @code {
+    public string baseAPIuri = "http://localhost:5109";
+    protected Tarefa[]? tarefas;
+    protected override async Task OnInitializedAsync()
+    {
+        tarefas = await Http.GetFromJsonAsync<Tarefa[]>($"{baseAPIuri}/api/v1/tarefas");
+    }
 
+    public class Tarefa
+    {
+        public string Id { get; set; }
+        public string Descricao { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public bool Concluido { get; set; }
+    }
 }
