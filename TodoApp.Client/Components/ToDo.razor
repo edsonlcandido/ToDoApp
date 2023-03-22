@@ -27,13 +27,16 @@
         </div>
     </li>
 </ul>
+<Modal @ref="Modal"></Modal>
 
 @code {
     [Parameter]
     public Main.Tarefa tarefa { get; set; }
 
+    private Modal Modal { get; set; }
+
     private async Task DeleteTarefa()
     {
-        
+        Modal.Show();
     }
 }
